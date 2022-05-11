@@ -1,5 +1,6 @@
 package br.security.project.app.controller;
 
+import br.security.project.app.dto.TokenDTO;
 import br.security.project.app.dto.UserDTO;
 import br.security.project.app.security.TokenService;
 import org.apache.coyote.Response;
@@ -25,15 +26,16 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity<?> auth(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<TokenDTO> auth(@RequestBody UserDTO userDTO) {
 
         UsernamePasswordAuthenticationToken dadosLogin = userDTO.converter();
 
         try {
             Authentication authentication = authenticationManager.authenticate(dadosLogin);
             String token = tokenService.generateToken(authentication);
+
             System.out.println(token);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(new TokenDTO(token, "Bearer"));
         } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().build();
         }
