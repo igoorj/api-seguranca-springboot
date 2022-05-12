@@ -1,9 +1,6 @@
 package br.security.project.app.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/")
@@ -17,5 +14,10 @@ public class HelloController {
     @GetMapping("/{id}")
     public String hello2(@PathVariable String id) {
         return "Hi, i am authenticate with id: " + id;
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable String id) {
+        return "Hi, i am authenticate to delete";
     }
 }
