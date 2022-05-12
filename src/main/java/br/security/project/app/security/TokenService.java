@@ -33,6 +33,7 @@ public class TokenService {
                 .compact();
     }
 
+    // o metodo utiliza a variavel secret para descriptografar o token
     public boolean isValidToken(String token) {
         try {
             Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+// filtro que intercepta a requisicao e valida o token
 public class FilterTokenAuthentication extends OncePerRequestFilter {
 
     private TokenService tokenService;
