@@ -1,6 +1,7 @@
 package br.security.project.app.security;
 
 import br.security.project.app.modelo.Usuario;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,5 +42,13 @@ public class TokenService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    // método que recupera os dados do usuario no token
+    public Long getUserAuthenticate(String token) {
+
+        // retorna o corpo compactado do token
+        Claims claims = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
+        return Long.parseLong(claims.getSubject()); // id do usuario
     }
 }

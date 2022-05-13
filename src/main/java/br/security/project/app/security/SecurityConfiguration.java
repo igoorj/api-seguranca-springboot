@@ -1,5 +1,6 @@
 package br.security.project.app.security;
 
+import br.security.project.app.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     // Precisamos sobrescrever essa classe para poder injetar no controller
     @Override
     @Bean
@@ -41,7 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().addFilterBefore(new FilterTokenAuthentication(tokenService), UsernamePasswordAuthenticationFilter.class);
+                .and().addFilterBefore(new FilterTokenAuthentication(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
     }
 
     // configuracoes de autenticacao

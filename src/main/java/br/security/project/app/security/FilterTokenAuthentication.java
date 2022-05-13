@@ -1,6 +1,10 @@
 package br.security.project.app.security;
 
 import antlr.Token;
+import br.security.project.app.modelo.Usuario;
+import br.security.project.app.repository.UsuarioRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -13,8 +17,11 @@ import java.io.IOException;
 public class FilterTokenAuthentication extends OncePerRequestFilter {
 
     private TokenService tokenService;
-    public FilterTokenAuthentication(TokenService tokenService) {
+    private UsuarioRepository usuarioRepository;
+
+    public FilterTokenAuthentication(TokenService tokenService, UsuarioRepository usuarioRepository) {
         this.tokenService = tokenService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Override
@@ -22,8 +29,20 @@ public class FilterTokenAuthentication extends OncePerRequestFilter {
                                     HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getToken(request);
         boolean valid = this.tokenService.isValidToken(token);
-        System.out.println(valid);
+        if(valid) {
+            toAuthenticate(token);
+        }
         filterChain.doFilter(request, response);
+    }
+
+    // autenticando o usuário
+    private void toAuthenticate(String token) {
+
+        // recuperando o usuario vindo com o token
+        Long userId = this.tokenService.getUserAuthenticate(token);
+        Usuario usuario = this.usuarioRepository.findById(userId).get();
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
     // metodo responsável por extrair o token da requisicao
